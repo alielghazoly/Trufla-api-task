@@ -20,6 +20,7 @@ class OrderRequest extends FormRequest
 
         return [
             'payment_method' => 'required',
+            'product_id' => 'required',
         ];
 
     }
@@ -39,6 +40,7 @@ class OrderRequest extends FormRequest
     {
         return [
             'payment_method.required' => 'payment_method is required',
+            'product_id.required' => 'product_id is required',
         ];
 
     }

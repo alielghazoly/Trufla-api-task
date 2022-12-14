@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\OrderInterface;
 use App\Models\Order;
+use App\Models\Product;
 use App\Traits\ResponseAPI;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,9 @@ class OrderRepository implements OrderInterface
             $order->payment_method = $request->payment_method;
             $order->buyer_id = Auth::id();
             $order->save();
+            $product = Product::find($request->product_id);
+            if(!$product) return $this->error("No product with ID $request->product_id", 404);
+            if(!$id) $order->products()->attach([$request->product_id]);
             return $order;
     }
  
