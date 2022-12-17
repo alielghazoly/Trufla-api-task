@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Interfaces\ProductInterface;
-use App\Traits\ResponseAPI;
+use App\Traits\ResponseToUser;
 use Illuminate\Support\Facades\Auth;
 
 class ProductService
 {
-    use ResponseAPI;
+    use ResponseToUser;
     private $productInterface;
     
 
@@ -25,12 +25,15 @@ class ProductService
 
     public function CreateOrUpdateProduct($request,$product)
     {
-        
         if ($product !== null) {
-            $this->CheckIfThisUserWhoIsCreatedThisProductOrNot($product); 
+            if (Auth::id() !== $product->seller_id) {
+                return $this->coreResponse('Product Not Belongs To This Seller',null, 404);
+             }
             return $this->productInterface->CreateOrUpdateProduct($request, $product->id);
         } else {
-            $this->CheckIfThisCurrentUserIsAsellerOrNot($product); 
+            if (Auth::user()->role !== 'seller') {
+                return $this->coreResponse('This User Is Not A Seller',null, 404);
+             }
             return $this->productInterface->CreateOrUpdateProduct($request);
         }
     }
@@ -43,21 +46,12 @@ class ProductService
 
     public function deleteProduct($product)
     {
-        $this->CheckIfThisUserWhoIsCreatedThisProductOrNot($product);
+        if (Auth::id() !== $product->seller_id) {
+            return $this->coreResponse('Product Not Belongs To This Seller',null, 404);
+         }
         return $this->productInterface->deleteProduct($product->id);
     }
 
-    public function CheckIfThisUserWhoIsCreatedThisProductOrNot($product)
-    {
-        if (Auth::id() !== $product->user_id) {
-            return $this->error('Product Not Belongs To This Seller', 404); 
-         }
-    }
-    public function CheckIfThisCurrentUserIsAsellerOrNot()
-    {
-        if (Auth::user()->role !== 'seller') {
-            return $this->error('This User Is Not A Seller', 404); 
-         }
-    }
+    
 
 }

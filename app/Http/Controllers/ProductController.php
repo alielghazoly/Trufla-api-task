@@ -65,7 +65,6 @@ class ProductController extends Controller
    
     public function destroy(Product $product)
     {
-        return $this->productService->deleteProduct($product->id);
         try {
             $product = $this->productService->deleteProduct($product->id);
             return $this->success("product deleted", $product);

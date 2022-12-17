@@ -62,7 +62,7 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(UserRequest $user)
+    public function destroy(Request $user)
     {
         try {
             $user =  $this->userService->deleteUser($user->id);
@@ -85,8 +85,8 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         try {
-            $this->userInterface->logout($request);
-            return $this->success("User logged out successfully", 401);
+           $response =  $this->userService->logout($request);
+            return $this->success("User logged out successfully", $response, 401);
         } catch(\Exception $e) {
             return $this->error($e->getMessage(), $e->getCode());
         }

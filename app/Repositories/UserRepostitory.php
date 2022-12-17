@@ -59,6 +59,6 @@ class UserRepository implements UserInterface
 
     public function logout($request)
     {
-            Auth::logout();
+      return  Auth::logout();
     }
 }

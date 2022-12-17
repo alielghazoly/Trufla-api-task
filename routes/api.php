@@ -17,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::apiResource('products', ProductController::class);   
@@ -29,5 +27,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 Route::apiResource('users', UserController::class);
 
 Route::post('users/login', [UserController::class,'login']);
-Route::post('users/logout', [UserController::class,'logout']);
+Route::post('users/logout', [UserController::class,'logout'])->middleware(['jwt.verify']);
 

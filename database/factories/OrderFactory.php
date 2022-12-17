@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,8 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            //
+                'payment_method' => fake()->name(),
+                'buyer_id' => User::factory()
         ];
     }
 }

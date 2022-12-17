@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Interfaces\OrderInterface;
-use App\Traits\ResponseAPI;
+use App\Traits\ResponseToUser;
 use Illuminate\Support\Facades\Auth;
 
 class OrderService
 {
-    use ResponseAPI;
+    use ResponseToUser;
     private $orderInterface;
     
 
@@ -26,10 +26,14 @@ class OrderService
     public function CreateOrUpdateOrder($request,$order)
     {
         if ($order !== null) {
-            $this->CheckIfThisUserWhoIsCreatedThisOrderOrNot($order); 
+            if (Auth::id() !== $order->buyer_id) {
+                return $this->coreResponse('Order Not Belongs To This buyer',null, 404);
+             }
             return $this->orderInterface->CreateOrUpdateOrder($request, $order->id);
         } else {
-            $this->CheckIfThisCurrentUserIsABuyerOrNot($order); 
+            if (Auth::user()->role !== 'buyer') {
+                return $this->coreResponse('This User Is Not A buyer',null, 404);
+             }
             return $this->orderInterface->CreateOrUpdateOrder($request);
         }
     }
@@ -42,21 +46,11 @@ class OrderService
 
     public function deleteOrder($order)
     {
-        $this->CheckIfThisUserWhoIsCreatedThisOrderOrNot($order);
+        if (Auth::id() !== $order->buyer_id) {
+            return $this->coreResponse('Order Not Belongs To This buyer',null, 404);
+         }
         return $this->orderInterface->deleteOrder($order->id);
     }
 
-    public function CheckIfThisUserWhoIsCreatedThisOrderOrNot($order)
-    {
-        if (Auth::id() !== $order->user_id) {
-            return $this->error('order Not Belongs To This Seller', 404); 
-         }
-    }
-    public function CheckIfThisCurrentUserIsABuyerOrNot()
-    {
-        if (Auth::user()->role !== 'buyer') {
-            return $this->error('This User Is Not A buyer', 404); 
-         }
-    }
 
 }

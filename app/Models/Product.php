@@ -14,7 +14,6 @@ class Product extends Model
         'details',
         'price',
         'count',
-        'discount',
         'seller_id'
     ];
 
