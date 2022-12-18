@@ -27,12 +27,12 @@ class OrderService
     {
         if ($order !== null) {
             if (Auth::id() !== $order->buyer_id) {
-                return $this->coreResponse('Order Not Belongs To This buyer',null, 404);
+                throw new \Exception('Order Not Belongs To This buyer', 404);
              }
             return $this->orderInterface->CreateOrUpdateOrder($request, $order->id);
         } else {
             if (Auth::user()->role !== 'buyer') {
-                return $this->coreResponse('This User Is Not A buyer',null, 404);
+                throw new \Exception('This User Is Not A buyer', 404);
              }
             return $this->orderInterface->CreateOrUpdateOrder($request);
         }
@@ -47,7 +47,7 @@ class OrderService
     public function deleteOrder($order)
     {
         if (Auth::id() !== $order->buyer_id) {
-            return $this->coreResponse('Order Not Belongs To This buyer',null, 404);
+            throw new \Exception('Order Not Belongs To This buyer', 404);
          }
         return $this->orderInterface->deleteOrder($order->id);
     }

@@ -27,12 +27,12 @@ class ProductService
     {
         if ($product !== null) {
             if (Auth::id() !== $product->seller_id) {
-                return $this->coreResponse('Product Not Belongs To This Seller',null, 404);
+                throw new \Exception('Product Not Belongs To This Seller', 404);
              }
             return $this->productInterface->CreateOrUpdateProduct($request, $product->id);
         } else {
             if (Auth::user()->role !== 'seller') {
-                return $this->coreResponse('This User Is Not A Seller',null, 404);
+                throw new \Exception('This User Is Not A Seller', 404);
              }
             return $this->productInterface->CreateOrUpdateProduct($request);
         }
@@ -43,11 +43,11 @@ class ProductService
         return $this->productInterface->getProductById($id);
     }
 
-
+ 
     public function deleteProduct($product)
     {
         if (Auth::id() !== $product->seller_id) {
-            return $this->coreResponse('Product Not Belongs To This Seller',null, 404);
+            throw new \Exception('Product Not Belongs To This Seller', 404);
          }
         return $this->productInterface->deleteProduct($product->id);
     }
