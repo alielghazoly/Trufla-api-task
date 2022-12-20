@@ -20,14 +20,14 @@ class ProductRepository implements ProductInterface
     public function getProductById($id)
     {
             $product = Product::find($id);
-            if(!$product) return $this->error("No product with ID $id", 404);
+            if(!$product) throw new \Exception("No product with ID $id", 404); 
             return $product;
     }
 
     public function CreateOrUpdateProduct($request, $id = null)
     {
             $product = $id ? Product::find($id) : new Product;
-            if($id && !$product) return $this->error("No product with ID $id", 404);
+            if($id && !$product) throw new \Exception("No product with ID $id", 404);
             $product->name = $request->name;
             $product->details = $request->details;
             $product->price = $request->price;
@@ -40,7 +40,7 @@ class ProductRepository implements ProductInterface
     public function deleteProduct($id)
     {
             $product = Product::find($id);
-            if(!$product) return $this->error("No product with ID $id", 404);
+            if(!$product) throw new \Exception("No product with ID $id", 404);
             $product->delete();
             return $product;
     }

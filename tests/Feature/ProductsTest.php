@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProductsTest extends TestCase
 {
@@ -18,7 +17,7 @@ class ProductsTest extends TestCase
     {
         $seller = User::factory()->create(['role' => 'seller']);
         $sellerToken= Auth::login($seller);
-        $response = $this->withHeaders([
+        $this->withHeaders([
             'Authorization' => "bearer $sellerToken"
             ])->post('/api/products',[
                 'name' => 'ahmed',
@@ -26,11 +25,17 @@ class ProductsTest extends TestCase
                 'price' => '5555',
                 'count' => '2',
                 'seller_id' => $seller->id,
-             ])
-            ->assertJson([
-                'error' => false,
-            ]);
+            ])->assertJson([
+                    'error' => false,
+                ]);
+
+        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseHas('users', [
+            'email' => $seller->email,
+             ]);
+        $this->assertModelExists($seller);
     }
+
 
     public function testUpdateProductBySellerUser()
     {

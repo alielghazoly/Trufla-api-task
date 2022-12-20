@@ -24,14 +24,14 @@ class UserRepository implements UserInterface
     public function getUserById($id)
     {
             $user = User::find($id);
-            if(!$user) return $this->error("No user with ID $id", 404);
+            if(!$user) throw new \Exception("No user with ID $id", 404); 
             return $user;
     }
 
     public function requestUser($request, $id = null)
     {
             $user = $id ? User::find($id) : new User;
-            if($id && !$user) return $this->error("No user with ID $id", 404);
+            if($id && !$user) throw new \Exception("No user with ID $id", 404); 
             $user->name = $request->name;
             $user->email = $request->email;
             if(!$id) $user->password = Hash::make($request->password);
@@ -42,7 +42,7 @@ class UserRepository implements UserInterface
     public function deleteUser($id)
     {
             $user = User::find($id);
-            if(!$user) return $this->error("No user with ID $id", 404);
+            if(!$user)  throw new \Exception("No user with ID $id", 404); 
             $user->delete();
             return $user;
     }
@@ -51,7 +51,7 @@ class UserRepository implements UserInterface
     {
             $credentials = $request->only('email', 'password');
             $token = Auth::attempt($credentials);
-            if(!$token) return $this->error("Unauthorized user", 401);
+            if(!$token) throw new \Exception("Unauthorized user", 401);
             $user = Auth::user();
             $user['token'] = $token;
             return $user;

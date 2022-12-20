@@ -20,19 +20,19 @@ class OrderRepository implements OrderInterface
     public function getOrderById($id)
     {
             $order = Order::find($id);
-            if(!$order) return $this->error("No order with ID $id", 404);
+            if(!$order) throw new \Exception("No order with ID $id", 404); 
             return $order;
     }
  
     public function CreateOrUpdateOrder($request, $id = null)
     {
             $order = $id ? Order::find($id) : new Order;
-            if($id && !$order) return $this->error("No order with ID $id", 404);
+            if($id && !$order) throw new \Exception("No order with ID $id", 404); 
             $order->payment_method = $request->payment_method;
             $order->buyer_id = Auth::id();
             $order->save();
             $product = Product::find($request->product_id);
-            if(!$product) return $this->error("No product with ID $request->product_id", 404);
+            if(!$product) throw new \Exception("No product with ID $request->product_id", 404);
             if(!$id) $order->products()->attach([$request->product_id]);
             return $order;
     }
@@ -40,7 +40,7 @@ class OrderRepository implements OrderInterface
     public function deleteOrder($id)
     {
             $order = Order::find($id);
-            if(!$order) return $this->error("No order with ID $id", 404);
+            if(!$order)  throw new \Exception("No order with ID $id", 404); 
             $order->delete();
             return $order;
     }
